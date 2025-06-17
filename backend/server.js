@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 connectDB();
 
 //Routes
-app.use('/api/notes/auth', noteRoutes);
+app.use('/api/notes', noteRoutes);
 
 //Start the server
 const PORT = process.env.PORT || 5000;

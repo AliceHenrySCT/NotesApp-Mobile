@@ -4,7 +4,7 @@ import Constants from "expo-constants";
 const API_BASE_URL =
   Constants?.manifest?.extra?.API_BASE_URL ||
   Constants?.expoConfig?.extra?.API_BASE_URL ||
-  "http://10.0.0.59:5000/api/notes";
+  "http://10.0.0.59:5000/api";
 
 export const api = async (
   endpoint: string,
