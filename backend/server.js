@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const authMiddleware = require('./middleware/auth');
 const noteRoutes = require('./routes/noteRoutes');
 const connectDB = require('./config/db');
 

@@ -89,11 +89,13 @@ const removeUser = async (req, res) => {
 };
 
 //Create a new note
+// Create a new note, owner is authenticated user, sharedWith is user ID array
 const createNote = async (req, res) => {
   try {
-    const { title, description, owners } = req.body;
-    const newNote = new Note({ title, description, owners }); //Create note instance
-    await newNote.save(); //Save note to database
+    const { title, description, sharedWith = [] } = req.body;
+    const owner = req.user.id;
+    const newNote = new Note({ title, description, owner, sharedWith });
+    await newNote.save();
     res.status(201).json(newNote);
   } catch (err) {
     if (err.name === 'ValidationError') {

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TextInput, Button, Alert, ScrollView, TouchableOpacity } from "react-native";
 import { api } from "../api/api";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation/AppNavigator";
@@ -10,11 +10,34 @@ type Props = {
   route: RouteProp<RootStackParamList, "EditNote">;
 };
 
+type User = { _id: string; username: string };
+
 export default function NoteFormScreen({ navigation, route }: Props) {
   const { note, token } = route.params || {};
   const [title, setTitle] = useState(note?.title || "");
   const [description, setDescription] = useState(note?.description || "");
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const isEdit = !!note;
+
+  // Fetch all users for sharing
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const users: User[] = await api("/notes/users", "GET", undefined, token);
+        setAllUsers(users.filter(u => !note || u._id !== note.owner)); // Exclude owner from sharing list
+      } catch (err: any) {
+        Alert.alert("Failed to load users", err.message);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const toggleUser = (userId: string) => {
+    setSelectedUserIds(ids =>
+      ids.includes(userId) ? ids.filter(id => id !== userId) : [...ids, userId]
+    );
+  };
 
   const handleSave = async () => {
     if (!title) {
@@ -23,10 +46,20 @@ export default function NoteFormScreen({ navigation, route }: Props) {
     }
     try {
       if (isEdit) {
-        await api(`/notes/${note._id}`, "PUT", { title, description }, token);
+        await api(
+          `/notes/${note._id}`,
+          "PUT",
+          { title, description, sharedWith: selectedUserIds },
+          token
+        );
         Alert.alert("Note updated");
       } else {
-        await api("/notes", "POST", { title, description }, token);
+        await api(
+          "/notes",
+          "POST",
+          { title, description, sharedWith: selectedUserIds },
+          token
+        );
         Alert.alert("Note created");
       }
       navigation.replace("Notes", { token });
@@ -36,7 +69,7 @@ export default function NoteFormScreen({ navigation, route }: Props) {
   };
 
   return (
-    <View style={{ padding: 20 }}>
+    <ScrollView contentContainerStyle={{ padding: 20 }}>
       <Text style={{ fontSize: 24, marginBottom: 12 }}>
         {isEdit ? "Edit Note" : "New Note"}
       </Text>
@@ -58,9 +91,32 @@ export default function NoteFormScreen({ navigation, route }: Props) {
         }}
         multiline
       />
+      <Text style={{ marginVertical: 8, fontWeight: "bold" }}>
+        Share with users:
+      </Text>
+      {allUsers.map(user => (
+        <TouchableOpacity
+          key={user._id}
+          style={{
+            padding: 10,
+            backgroundColor: selectedUserIds.includes(user._id)
+              ? "#aaf"
+              : "#eee",
+            borderRadius: 5,
+            marginBottom: 6,
+          }}
+          onPress={() => toggleUser(user._id)}
+        >
+          <Text>{user.username}</Text>
+        </TouchableOpacity>
+      ))}
       <Button title={isEdit ? "Update" : "Create"} onPress={handleSave} />
       <View style={{ marginVertical: 10 }} />
-      <Button title="Cancel" color="red" onPress={() => navigation.replace("Notes", { token })} />
-    </View>
+      <Button
+        title="Cancel"
+        color="red"
+        onPress={() => navigation.replace("Notes", { token })}
+      />
+    </ScrollView>
   );
 }
