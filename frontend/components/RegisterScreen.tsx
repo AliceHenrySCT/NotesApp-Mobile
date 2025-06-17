@@ -9,12 +9,13 @@ type Props = {
 };
 
 export default function RegisterScreen({ navigation }: Props) {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
     try {
-      await api("/auth/register", "POST", { email, password });
+      await api("/auth/register", "POST", { username, email, password });
       Alert.alert("Success", "Account created. Please log in.");
       navigation.replace("Login");
     } catch (err: any) {
@@ -25,6 +26,13 @@ export default function RegisterScreen({ navigation }: Props) {
   return (
     <View style={{ padding: 20 }}>
       <Text style={{ fontSize: 24, marginBottom: 20 }}>Register</Text>
+      <Text>Username:</Text>
+      <TextInput
+        value={username}
+        onChangeText={setUsername}
+        autoCapitalize="none"
+        style={{ borderBottomWidth: 1, marginBottom: 12 }}
+      />
       <Text>Email:</Text>
       <TextInput
         value={email}
