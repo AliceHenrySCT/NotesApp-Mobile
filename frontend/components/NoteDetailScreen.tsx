@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Button, Alert, ActivityIndicator } from "react-native";
-import { api } from "../api/api";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../navigation/AppNavigator";
-import { RouteProp } from "@react-navigation/native";
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, Alert, ActivityIndicator } from 'react-native';
+import styles from './styles';
+import { api } from '../api/api';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/AppNavigator';
 
 type Props = {
-  navigation: StackNavigationProp<RootStackParamList, "NoteDetail">;
-  route: RouteProp<RootStackParamList, "NoteDetail">;
+  navigation: StackNavigationProp<RootStackParamList, 'NoteDetail'>;
+  route: RouteProp<RootStackParamList, 'NoteDetail'>;
 };
 
 export default function NoteDetailScreen({ navigation, route }: Props) {
@@ -17,10 +18,10 @@ export default function NoteDetailScreen({ navigation, route }: Props) {
 
   const fetchNote = async () => {
     try {
-      const note = await api(`/notes/note/${noteId}`, "GET", undefined, token);
+      const note = await api(`/notes/note/${noteId}`, 'GET', undefined, token);
       setNote(note);
     } catch (err: any) {
-      Alert.alert("Error", err.message);
+      Alert.alert('Error', err.message);
     }
     setLoading(false);
   };
@@ -31,43 +32,33 @@ export default function NoteDetailScreen({ navigation, route }: Props) {
 
   const handleDelete = async () => {
     try {
-      await api(`/notes/${noteId}`, "DELETE", undefined, token);
-      Alert.alert("Deleted", "Note has been deleted.");
-      navigation.replace("Notes", { token });
+      await api(`/notes/${noteId}`, 'DELETE', undefined, token);
+      Alert.alert('Deleted', 'Note has been deleted.');
+      navigation.replace('Notes', { token });
     } catch (err: any) {
-      Alert.alert("Delete Failed", err.message);
+      Alert.alert('Delete Failed', err.message);
     }
   };
 
-  if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" />;
-
+  if (loading) return <ActivityIndicator style={styles.activityIndicator} size="large" />;
   if (!note) return null;
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, fontWeight: "bold" }}>{note.title}</Text>
-      <Text style={{ marginVertical: 12 }}>{note.description}</Text>
-      <Text style={{ color: "#888" }}>
-        Created by: {note.owner?.username || "Unknown"}
-      </Text>
-      <Text style={{ color: "#888" }}>
-        Created: {new Date(note.createdAt).toLocaleString()}
-      </Text>
-      <Text style={{ color: "#888" }}>
-        Last Edited: {new Date(note.updatedAt).toLocaleString()}
-      </Text>
-      <View style={{ marginVertical: 20 }}>
+    <View style={styles.container}>
+      <Text style={styles.detailTitle}>{note.title}</Text>
+      <Text style={styles.description}>{note.description}</Text>
+      <Text style={styles.metaText}>Created by: {note.owner?.username || 'Unknown'}</Text>
+      <Text style={styles.metaText}>Created: {new Date(note.createdAt).toLocaleString()}</Text>
+      <Text style={styles.metaText}>Last Edited: {new Date(note.updatedAt).toLocaleString()}</Text>
+      <View style={styles.detailButtonContainer}>
         <Button
           title="Edit"
-          onPress={() => navigation.navigate("EditNote", { note, token })}
+          onPress={() => navigation.navigate('EditNote', { note, token })}
         />
-        <View style={{ marginVertical: 5 }} />
+        <View style={styles.spacerSmall} />
         <Button title="Delete" color="red" onPress={handleDelete} />
-        <View style={{ marginVertical: 5 }} />
-        <Button
-          title="Back to Notes"
-          onPress={() => navigation.replace("Notes", { token })}
-        />
+        <View style={styles.spacerSmall} />
+        <Button title="Back to Notes" onPress={() => navigation.replace('Notes', { token })} />
       </View>
     </View>
   );
