@@ -17,7 +17,7 @@ export default function NoteDetailScreen({ navigation, route }: Props) {
 
   const fetchNote = async () => {
     try {
-      const note = await api(`/notes/${noteId}`, "GET", undefined, token);
+      const note = await api(`/notes/note/${noteId}`, "GET", undefined, token);
       setNote(note);
     } catch (err: any) {
       Alert.alert("Error", err.message);

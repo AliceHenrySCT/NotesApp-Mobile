@@ -108,14 +108,33 @@ const createNote = async (req, res) => {
 //Get all notes for a specific user
 const getNotes = async (req, res) => {
   try {
-    const { user } = req.params;
-    const notes = await Note.find({ owners: user }); //Find notes owned by the user
-    if (!notes) {
-      return res.status(404).json({ error: 'Notes not found' });
-    }
-    res.status(200).json(notes);
+    const userId = req.user.id; // Set by auth middleware
+
+    const notes = await Note.find({
+      $or: [
+        { owner: userId },
+        { sharedWith: userId }
+      ]
+    }).sort({ updatedAt: -1 });
+
+    res.json(notes);
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Failed to fetch notes' });
+  }
+};
+
+const getUserNotes = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const notes = await Note.find({
+      $or: [
+        { owner: userId },
+        { sharedWith: userId }
+      ]
+    }).sort({ updatedAt: -1 });
+    res.json(notes);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch notes' });
   }
 };
 
@@ -179,6 +198,7 @@ module.exports = {
   removeUser,
   createNote,
   getNotes,
+  getUserNotes,
   getNoteById,
   updateNote,
   deleteNote,
