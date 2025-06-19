@@ -48,6 +48,9 @@ export default function NoteDetailScreen({ navigation, route }: Props) {
       <Text style={{ fontSize: 24, fontWeight: "bold" }}>{note.title}</Text>
       <Text style={{ marginVertical: 12 }}>{note.description}</Text>
       <Text style={{ color: "#888" }}>
+        Created by: {note.owner?.username || "Unknown"}
+      </Text>
+      <Text style={{ color: "#888" }}>
         Created: {new Date(note.createdAt).toLocaleString()}
       </Text>
       <Text style={{ color: "#888" }}>
@@ -61,7 +64,10 @@ export default function NoteDetailScreen({ navigation, route }: Props) {
         <View style={{ marginVertical: 5 }} />
         <Button title="Delete" color="red" onPress={handleDelete} />
         <View style={{ marginVertical: 5 }} />
-        <Button title="Back to Notes" onPress={() => navigation.replace("Notes", { token })} />
+        <Button
+          title="Back to Notes"
+          onPress={() => navigation.replace("Notes", { token })}
+        />
       </View>
     </View>
   );
