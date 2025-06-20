@@ -19,11 +19,13 @@ type Props = {
 };
 
 export default function RegisterScreen({ navigation }: Props) {
+  // Local state for form inputs and loading indicator
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Called when "Register" button pressed
   const handleRegister = async () => {
     if (!username.trim() || !email.trim() || !password.trim()) {
       return Alert.alert('Validation', 'Please enter username, email, and password');
@@ -42,7 +44,7 @@ export default function RegisterScreen({ navigation }: Props) {
       try { data = JSON.parse(text); } catch { data = {}; }
 
       if (!res.ok) {
-        // Handle duplicate‐key error
+        // Handle already existing username error
         if (data.error && data.error.includes('E11000')) {
           return Alert.alert(
             'Username Taken',

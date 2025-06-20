@@ -8,6 +8,7 @@ import NotesListScreen from '../components/NotesListScreen';
 import NoteDetailScreen from '../components/NoteDetailScreen';
 import NoteFormScreen from '../components/NoteFormScreen';
 
+// Define the param list for each screen
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
@@ -27,15 +28,14 @@ const navTheme = {
   },
 };
 
+// Common header styles for all authenticated screens
 const commonOptions: StackNavigationOptions = {
   headerStyle: {
-    backgroundColor: '#121212',      // dark background
-    shadowColor: 'transparent',      // remove bottom border on iOS
-    elevation: 0,                    // remove bottom border on Android
+    backgroundColor: '#121212',      
   },
-  headerTintColor: '#5A4FCF',        // purple back arrow & buttons
+  headerTintColor: '#5A4FCF', 
   headerTitleStyle: {
-    color: '#FFFFFF',                // white title text
+    color: '#FFFFFF',
     fontWeight: '600',
   },
 };

@@ -19,10 +19,12 @@ type Props = {
 };
 
 export default function LoginScreen({ navigation }: Props) {
+  // Local state for form inputs and loading indicator
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Called when "Log In" button pressed
   const handleLogin = async () => {
     if (!email || !password) {
       return Alert.alert('Please enter both email and password');
@@ -33,7 +35,7 @@ export default function LoginScreen({ navigation }: Props) {
       setLoading(false);
 
       if (token) {
-        // Navigate into your Notes screen instead of Home
+        // Navigate to notes list, replacing this screen
         navigation.replace('Notes', { token });
       } else {
         Alert.alert('Login Failed', 'Invalid credentials');
