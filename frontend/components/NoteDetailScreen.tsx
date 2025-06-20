@@ -1,65 +1,144 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Alert, ActivityIndicator } from 'react-native';
-import styles from './styles';
-import { api } from '../api/api';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+
 import { RootStackParamList } from '../navigation/AppNavigator';
+import styles from './styles';
 
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, 'NoteDetail'>;
   route: RouteProp<RootStackParamList, 'NoteDetail'>;
 };
 
+type NoteDetail = {
+  _id: string;
+  title: string;
+  description: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export default function NoteDetailScreen({ navigation, route }: Props) {
   const { noteId, token } = route.params;
-  const [note, setNote] = useState<any>(null);
+  const [note, setNote] = useState<NoteDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchNote = async () => {
-    try {
-      const note = await api(`/notes/note/${noteId}`, 'GET', undefined, token);
-      setNote(note);
-    } catch (err: any) {
-      Alert.alert('Error', err.message);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
+    const fetchNote = async () => {
+      try {
+        const response = await fetch(
+          `http://10.0.0.59:5000/api/notes/note/${noteId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': token,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Server responded with ${response.status}`);
+        }
+
+        const data: NoteDetail = await response.json();
+        setNote(data);
+      } catch (err: any) {
+        Alert.alert('Error loading note', err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchNote();
-  }, []);
+  }, [noteId, token]);
 
-  const handleDelete = async () => {
-    try {
-      await api(`/notes/${noteId}`, 'DELETE', undefined, token);
-      Alert.alert('Deleted', 'Note has been deleted.');
-      navigation.replace('Notes', { token });
-    } catch (err: any) {
-      Alert.alert('Delete Failed', err.message);
-    }
-  };
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#121212',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ActivityIndicator size="large" color="#5A4FCF" />
+      </View>
+    );
+  }
 
-  if (loading) return <ActivityIndicator style={styles.activityIndicator} size="large" />;
-  if (!note) return null;
+  if (!note) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#121212',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 20,
+        }}
+      >
+        <Text style={{ color: '#fff', fontSize: 16 }}>Note not found.</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.detailTitle}>{note.title}</Text>
-      <Text style={styles.description}>{note.description}</Text>
-      <Text style={styles.metaText}>Created by: {note.owner?.username || 'Unknown'}</Text>
-      <Text style={styles.metaText}>Created: {new Date(note.createdAt).toLocaleString()}</Text>
-      <Text style={styles.metaText}>Last Edited: {new Date(note.updatedAt).toLocaleString()}</Text>
-      <View style={styles.detailButtonContainer}>
-        <Button
-          title="Edit"
-          onPress={() => navigation.navigate('EditNote', { note, token })}
-        />
-        <View style={styles.spacerSmall} />
-        <Button title="Delete" color="red" onPress={handleDelete} />
-        <View style={styles.spacerSmall} />
-        <Button title="Back to Notes" onPress={() => navigation.replace('Notes', { token })} />
-      </View>
-    </View>
+    <ScrollView style={{ flex: 1, backgroundColor: '#121212', padding: 20 }}>
+      {/* Title */}
+      <Text style={[styles.label, { fontSize: 24, marginBottom: 12 }]}>
+        {note.title}
+      </Text>
+
+      {/* Description */}
+      <Text
+        style={{
+          color: '#fff',
+          fontSize: 16,
+          marginBottom: 20,
+          lineHeight: 22,
+        }}
+      >
+        {note.description}
+      </Text>
+
+      {/* Timestamps */}
+      {note.createdAt && (
+        <Text style={[styles.label, { marginBottom: 8 }]}>
+          Created: {new Date(note.createdAt).toLocaleString()}
+        </Text>
+      )}
+      {note.updatedAt && (
+        <Text style={[styles.label, { marginBottom: 20 }]}>
+          Updated: {new Date(note.updatedAt).toLocaleString()}
+        </Text>
+      )}
+
+      {/* Edit Button */}
+      <TouchableOpacity
+        style={[styles.button, { marginBottom: 12 }]}
+        onPress={() => navigation.navigate('EditNote', { note, token })}
+      >
+        <Text style={styles.buttonText}>Edit Note</Text>
+      </TouchableOpacity>
+
+      {/* Back to List */}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.buttonText}>Back to Notes</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }

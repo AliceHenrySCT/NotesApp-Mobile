@@ -160,11 +160,11 @@ const getNoteById = async (req, res) => {
 const updateNote = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, owners } = req.body;
+    const { title, description, sharedWith } = req.body;
 
     const note = await Note.findByIdAndUpdate(
       id,
-      { title, description, owners },
+      { title, description, sharedWith },
       { new: true } //Return updated note
     );
 

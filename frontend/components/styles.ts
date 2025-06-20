@@ -25,7 +25,11 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#444',
     marginBottom: 12,
-    color: '#E0E0E0',
+    backgroundColor: '#2A2A2A',
+    color: '#FFFFFF', 
+    padding: 10,
+    borderRadius: 6,
+    marginVertical: 6,
   },
   descriptionInput: {
     borderWidth: 1,
@@ -105,5 +109,49 @@ export default StyleSheet.create({
   },
   logoutButtonContainer: {
     marginBottom: 30,
+  },
+    button: {
+    backgroundColor: '#5A4FCF',   
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 8,
+  },
+  buttonText: {
+    color: '#FFFFFF',             
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  buttonContainer: {
+    backgroundColor: '#1F1F1F',   
+    padding: 10,
+    borderRadius: 8,
+  },
+  label: {
+    color: '#FFFFFF',
+    marginBottom: 4,
+    fontSize: 14,
+  },
+   sectionContainer: {
+    marginTop: 20,
+  },
+  sectionTitle: {
+    color: '#aaa',
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  assignedUsersContainer: {
+    backgroundColor: '#1A1A1A',
+    padding: 12,
+    borderRadius: 6,
+  },
+  unassignedUsersContainer: {
+    paddingVertical: 10,
+  },
+  userItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 4,
   },
 });
