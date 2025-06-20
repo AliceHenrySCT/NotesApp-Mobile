@@ -63,10 +63,13 @@ A simple note-taking mobile application built with React Native and Expo that al
 
 4. **Start the app and the backend server**
 
+   Open a terminal for the backend
    ```bash
-   cd ../backend
    npm start
-   cd ../frontend
+   ```
+   
+   Open a seperate terminal for the frontend
+   ```
    npx expo start --clear
    ```
 
