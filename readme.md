@@ -39,7 +39,7 @@ A simple note-taking mobile application built with React Native and Expo that al
    ```bash
    cd frontend
    npm install
-   cd backend
+   cd ../backend
    npm install
    ```
 
@@ -64,9 +64,9 @@ A simple note-taking mobile application built with React Native and Expo that al
 4. **Start the app and the backend server**
 
    ```bash
-   cd backend
+   cd ../backend
    npm start
-   cd frontend
+   cd ../frontend
    npx expo start --clear
    ```
 
