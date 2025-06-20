@@ -12,6 +12,9 @@ import { RouteProp } from '@react-navigation/native';
 
 import styles from './styles';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import Constants from "expo-constants";
+
+const API_BASE_URL = Constants?.expoConfig?.extra?.API_BASE_URL;
 
 type Note = {
   _id: string;
@@ -33,7 +36,7 @@ export default function NotesListScreen({ navigation, route }: Props) {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch('http://10.0.0.59:5000/api/notes', {
+        const response = await fetch(`${API_BASE_URL}/notes`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

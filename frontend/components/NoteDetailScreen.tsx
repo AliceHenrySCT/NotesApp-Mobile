@@ -12,6 +12,9 @@ import { RouteProp } from '@react-navigation/native';
 
 import { RootStackParamList } from '../navigation/AppNavigator';
 import styles from './styles';
+import Constants from "expo-constants";
+
+const API_BASE_URL = Constants?.expoConfig?.extra?.API_BASE_URL;
 
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, 'NoteDetail'>;
@@ -35,7 +38,7 @@ export default function NoteDetailScreen({ navigation, route }: Props) {
     const fetchNote = async () => {
       try {
         const response = await fetch(
-          `http://10.0.0.59:5000/api/notes/note/${noteId}`,
+          `${API_BASE_URL}/notes/note/${noteId}`,
           {
             method: 'GET',
             headers: {
@@ -118,11 +121,7 @@ export default function NoteDetailScreen({ navigation, route }: Props) {
           Created: {new Date(note.createdAt).toLocaleString()}
         </Text>
       )}
-      {note.updatedAt && (
-        <Text style={[styles.label, { marginBottom: 20 }]}>
-          Updated: {new Date(note.updatedAt).toLocaleString()}
-        </Text>
-      )}
+
 
       {/* Edit Button */}
       <TouchableOpacity

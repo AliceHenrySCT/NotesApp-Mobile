@@ -12,6 +12,9 @@ import { RouteProp } from '@react-navigation/native';
 
 import { RootStackParamList } from '../navigation/AppNavigator';
 import styles from './styles';
+import Constants from "expo-constants";
+
+const API_BASE_URL = Constants?.expoConfig?.extra?.API_BASE_URL;
 
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, 'Register'>;
@@ -34,7 +37,7 @@ export default function RegisterScreen({ navigation }: Props) {
 
     try {
       // 1) Register
-      const res = await fetch('http://10.0.0.59:5000/api/auth/register', {
+      const res = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password }),
@@ -58,7 +61,7 @@ export default function RegisterScreen({ navigation }: Props) {
       }
 
       // 2) Immediately log in to get a valid JWT
-      const loginRes = await fetch('http://10.0.0.59:5000/api/auth/login', {
+      const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

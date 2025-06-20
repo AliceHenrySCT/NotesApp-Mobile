@@ -15,6 +15,9 @@ import { RouteProp } from '@react-navigation/native';
 
 import { RootStackParamList } from '../navigation/AppNavigator';
 import styles from './styles';
+import Constants from "expo-constants";
+
+const API_BASE_URL = Constants?.expoConfig?.extra?.API_BASE_URL;
 
 type User = { _id: string; username: string };
 type NoteParam = {
@@ -58,7 +61,7 @@ export default function NoteFormScreen({ navigation, route }: Props) {
     (async () => {
       try {
         const res = await fetch(
-          `http://10.0.0.59:5000/api/notes/note/${note!._id}`,
+          `${API_BASE_URL}/notes/note/${note!._id}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -100,7 +103,7 @@ export default function NoteFormScreen({ navigation, route }: Props) {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('http://10.0.0.59:5000/api/notes/users', {
+        const res = await fetch(`${API_BASE_URL}/notes/users`, {
           headers: {
             'Content-Type': 'application/json',
             'x-access-token': token,
@@ -135,10 +138,10 @@ export default function NoteFormScreen({ navigation, route }: Props) {
     try {
       let url: string, method: 'POST' | 'PUT';
       if (isEditing) {
-        url = `http://10.0.0.59:5000/api/notes/note/${note!._id}`;
+        url = `${API_BASE_URL}/notes/note/${note!._id}`;
         method = 'PUT';
       } else {
-        url = `http://10.0.0.59:5000/api/notes`;
+        url = `${API_BASE_URL}/notes`;
         method = 'POST';
       }
       const payload: any = { title, description };

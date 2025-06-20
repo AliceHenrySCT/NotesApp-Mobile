@@ -1,10 +1,6 @@
 import Constants from "expo-constants";
 
-// Use either .env or app.json's "extra" field for your base URL
-const API_BASE_URL =
-  Constants?.manifest?.extra?.API_BASE_URL ||
-  Constants?.expoConfig?.extra?.API_BASE_URL ||
-  "http://10.0.0.59:5000/api";
+const API_BASE_URL = Constants?.expoConfig?.extra?.API_BASE_URL;
 
 export const api = async (
   endpoint: string,
@@ -25,9 +21,7 @@ export const api = async (
   try {
     const res = await fetch(url, options);
 
-    // Always read as text first for debugging
     const text = await res.text();
-    console.log(`API response from [${url}] status ${res.status}:\n${text}`);
 
     let data;
     try {
